@@ -1,0 +1,6 @@
+{
+  "name": "OMKAR PRESET",
+  "description": "Save, share, import and reuse video editing instructions, splits, and keyframes across videos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

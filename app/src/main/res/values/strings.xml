@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">OMKAR PRESET</string>
+    <string name="title_editor">Video Preset Editor</string>
+    <string name="action_import_video">Import Video</string>
+    <string name="action_save_preset">Save Preset (.omkarpreset)</string>
+    <string name="action_import_preset">Import Preset</string>
+    <string name="action_share_preset">Share Preset</string>
+    <string name="action_export_video">Export Video</string>
+    <string name="action_add_split">Add Split</string>
+    <string name="action_add_keyframe">Add Keyframe</string>
+    <string name="label_split_points">Split Points</string>
+    <string name="label_keyframes">Keyframes</string>
+    <string name="label_clips">Clips</string>
+    <string name="warning_preset_exceeds_duration">Warning: Some preset split points or keyframes exceed the target video duration. Do you want to keep them intact or clamp them?</string>
+    <string name="error_invalid_preset">The selected file is not a valid OMKAR_PRESET file.</string>
+</resources>
