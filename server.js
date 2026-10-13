@@ -389,8 +389,9 @@ const htmlContent = `<!DOCTYPE html>
     <div class="header-actions">
       <input type="file" id="importVideoInput" accept="video/*" style="display: none;">
       <input type="file" id="importPresetInput" accept=".omkarpreset,application/json" style="display: none;">
+      <a href="/download-apk" download="omkar-preset-debug.apk" class="btn-primary" style="text-decoration: none; background: #10b981; color: white; font-weight: 700;">📱 Download APK (22MB)</a>
       <button class="btn-secondary" onclick="document.getElementById('importVideoInput').click()">📹 Import Video</button>
-      <button class="btn-secondary" onclick="document.getElementById('importPresetInput').click()">📥 Import .omkarpreset</button>
+      <button class="btn-secondary" onclick="document.getElementById('importPresetInput').click()">📥 Import Preset</button>
       <button class="btn-primary" onclick="savePreset()">💾 Save Preset</button>
       <button class="btn-accent" onclick="exportVideo()">🎬 Export Video</button>
     </div>
@@ -495,12 +496,22 @@ const htmlContent = `<!DOCTYPE html>
         <div class="splits-list" id="splitsList"></div>
       </div>
 
-      <!-- Android Architecture Info -->
-      <div class="panel" style="background: rgba(14, 165, 233, 0.05); border-color: rgba(14, 165, 233, 0.2);">
-        <div class="panel-title" style="color: var(--primary);">Android APK Ready</div>
+      <!-- Android APK & GitHub Actions Info -->
+      <div class="panel" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
+        <div class="panel-title" style="color: #10b981;">APK Ready for Download</div>
         <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
-          This applet contains the full Jetpack Compose Kotlin codebase, Robolectric tests, and GitHub Actions workflow configured for building the release APK!
+          The debug APK (22MB) is compiled and ready to download immediately:
         </p>
+        <a href="/download-apk" download="omkar-preset-debug.apk" style="display:block; text-align:center; padding:10px 14px; background:#10b981; color:white; border-radius:8px; font-weight:700; text-decoration:none; margin-top:6px;">
+          ⬇️ Download APK (22MB)
+        </a>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px; line-height: 1.4;">
+          <strong>Via GitHub Actions:</strong><br>
+          1. Push code to GitHub repository.<br>
+          2. Open the <strong>Actions</strong> tab.<br>
+          3. Click the latest workflow run.<br>
+          4. Scroll down to <strong>Artifacts</strong> and download <code>omkar-preset-debug-apk</code>!
+        </div>
       </div>
     </div>
   </main>
@@ -943,6 +954,28 @@ const htmlContent = `<!DOCTYPE html>
 `;
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/download-apk') {
+    const apkCandidates = [
+      path.join(__dirname, 'app/build/outputs/apk/debug/app-debug.apk'),
+      path.join(__dirname, '.build-outputs/app-debug.apk')
+    ];
+    const apkFile = apkCandidates.find(p => fs.existsSync(p));
+    if (apkFile) {
+      const stat = fs.statSync(apkFile);
+      res.writeHead(200, {
+        'Content-Type': 'application/vnd.android.package-archive',
+        'Content-Disposition': 'attachment; filename="omkar-preset-debug.apk"',
+        'Content-Length': stat.size
+      });
+      fs.createReadStream(apkFile).pipe(res);
+      return;
+    } else {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('APK not found. Please compile the app first.');
+      return;
+    }
+  }
+
   res.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
     'Cache-Control': 'no-cache'

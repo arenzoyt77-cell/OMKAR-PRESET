@@ -9,10 +9,11 @@ on:
 
 jobs:
   build:
+    name: Build & Package Android APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
@@ -20,34 +21,17 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: gradle
-
-      - name: Grant execute permission for gradlew
-        run: |
-          if [ -f gradlew ]; then
-            chmod +x gradlew
-          fi
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Run Unit & Robolectric Tests
-        run: |
-          if [ -f gradlew ]; then
-            ./gradlew testDebugUnitTest --stacktrace
-          else
-            gradle testDebugUnitTest --stacktrace
-          fi
+        with:
+          gradle-version: '9.3.1'
 
       - name: Build Debug APK
         run: |
-          if [ -f gradlew ]; then
-            ./gradlew assembleDebug --stacktrace
-          else
-            gradle assembleDebug --stacktrace
-          fi
+          gradle assembleDebug --stacktrace
 
-      - name: Upload Debug APK Artifact
+      - name: Upload Debug APK to Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: omkar-preset-debug-apk
